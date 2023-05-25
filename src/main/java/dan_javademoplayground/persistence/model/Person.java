@@ -24,7 +24,8 @@ public class Person extends MarketActor {
     @Column(name = "photo")
     private byte[] photo;
 
-    @OneToMany(mappedBy = "person", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    // added CascadeType.REMOVE for deleting persons
+    @OneToMany(mappedBy = "person", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
     private List<Wallet> wallets;
 
     public void setPersonReferences() {

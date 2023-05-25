@@ -20,7 +20,8 @@ public class Agency extends MarketActor {
     @Column
     private String cui;
 
-    @OneToMany(mappedBy = "agency", orphanRemoval = true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    // added CascadeType.REMOVE for deleting agencies
+    @OneToMany(mappedBy = "agency", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
     private List<ExchangePool> exchangePools;
 
     public void setExchangePoolReferences() {

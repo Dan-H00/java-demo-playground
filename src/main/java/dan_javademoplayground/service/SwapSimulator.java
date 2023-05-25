@@ -1,7 +1,7 @@
 package dan_javademoplayground.service;
 
 import dan_javademoplayground.dto.ExchangeRequest;
-import com.mcserby.playground.javademoplayground.persistence.model.*;
+import dan_javademoplayground.persistence.model.*;
 import dan_javademoplayground.persistence.repository.AgencyRepository;
 import dan_javademoplayground.persistence.repository.PersonRepository;
 import dan_javademoplayground.persistence.repository.WalletRepository;
@@ -82,8 +82,8 @@ public class SwapSimulator {
             return;
         }
 
-        com.mcserby.playground.javademoplayground.dto.Liquidity exchangedLiquidity =
-                com.mcserby.playground.javademoplayground.dto.Liquidity.builder()
+        dan_javademoplayground.dto.Liquidity exchangedLiquidity =
+                dan_javademoplayground.dto.Liquidity.builder()
                         .name(liquidityFrom.getName())
                         .ticker(liquidityFrom.getTicker())
                         .value(random.nextDouble() * liquidityFrom.getValue())

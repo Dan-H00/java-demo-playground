@@ -24,6 +24,7 @@ public class Wallet {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "fk_person") - optional
     private Person person;
 
     @Override

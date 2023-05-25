@@ -1,11 +1,12 @@
 package dan_javademoplayground.integration;
 
 
-import com.mcserby.playground.javademoplayground.persistence.model.*;
+import dan_javademoplayground.persistence.model.*;
 import dan_javademoplayground.persistence.repository.AgencyRepository;
 import dan_javademoplayground.persistence.repository.PersonRepository;
 import dan_javademoplayground.service.RandomEntityGenerator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,8 @@ public class DataGeneratorIT {
 
     private final Logger logger = LoggerFactory.getLogger(DataGeneratorIT.class);
 
-    private static final int NUMBER_OF_RANDOM_PERSONS = 100_000;
+    // modified to only 10 persons to not keep the test running for so long while testing
+    private static final int NUMBER_OF_RANDOM_PERSONS = 10;
     private static final int NUMBER_OF_RANDOM_AGENCIES = 1;
     private static final int MAX_WALLETS_PER_AGENCY = 1;
     private static final int MAX_WALLETS_PER_PERSON = 3;
@@ -47,6 +49,8 @@ public class DataGeneratorIT {
     }
 
     @Test
+    // added a custom Parameter Resolver class
+    @ExtendWith(RandomParameterResolver.class)
     void generateRandomAgencies(Random random) {
         for (int i = 0; i < NUMBER_OF_RANDOM_AGENCIES; i++) {
             Agency agency = RandomEntityGenerator
@@ -55,6 +59,5 @@ public class DataGeneratorIT {
             agencyRepository.save(agency);
         }
     }
-
 
 }

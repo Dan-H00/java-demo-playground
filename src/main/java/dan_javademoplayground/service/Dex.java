@@ -131,13 +131,13 @@ public class Dex implements PriceSource {
             this.exchangePoolRepository.save(exchangePool);
             this.walletRepository.save(wallet);
 
-            com.mcserby.playground.javademoplayground.dto.Liquidity swapped = com.mcserby.playground.javademoplayground.dto.Liquidity.builder()
+            dan_javademoplayground.dto.Liquidity swapped = dan_javademoplayground.dto.Liquidity.builder()
                     .name(liquidityFrom.getName())
                     .ticker(liquidityFrom.getTicker())
                     .value(delta)
                     .build();
 
-            com.mcserby.playground.javademoplayground.dto.Liquidity result = com.mcserby.playground.javademoplayground.dto.Liquidity.builder()
+            dan_javademoplayground.dto.Liquidity result = dan_javademoplayground.dto.Liquidity.builder()
                     .name(liquidityTo.getName())
                     .ticker(liquidityTo.getTicker())
                     .value(returnedValue)

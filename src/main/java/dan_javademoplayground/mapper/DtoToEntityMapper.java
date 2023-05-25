@@ -1,14 +1,14 @@
 package dan_javademoplayground.mapper;
 
-import com.mcserby.playground.javademoplayground.persistence.model.*;
+import dan_javademoplayground.persistence.model.*;
 
 import java.util.Base64;
 import java.util.stream.Collectors;
 
 public class DtoToEntityMapper {
 
-    public static com.mcserby.playground.javademoplayground.dto.Agency map(Agency agency) {
-        return com.mcserby.playground.javademoplayground.dto.Agency.builder()
+    public static dan_javademoplayground.dto.Agency map(Agency agency) {
+        return dan_javademoplayground.dto.Agency.builder()
                 .id(agency.getId())
                 .name(agency.getName())
                 .cui(agency.getCui())
@@ -17,7 +17,7 @@ public class DtoToEntityMapper {
                 .build();
     }
 
-    public static Agency map(com.mcserby.playground.javademoplayground.dto.Agency agency) {
+    public static Agency map(dan_javademoplayground.dto.Agency agency) {
         Agency result = Agency.builder()
                 .id(agency.getId())
                 .name(agency.getName())
@@ -29,8 +29,8 @@ public class DtoToEntityMapper {
         return result;
     }
 
-    public static com.mcserby.playground.javademoplayground.dto.Person map(Person person) {
-        return com.mcserby.playground.javademoplayground.dto.Person.builder()
+    public static dan_javademoplayground.dto.Person map(Person person) {
+        return dan_javademoplayground.dto.Person.builder()
                 .id(person.getId())
                 .name(person.getName())
                 .address(person.getAddress())
@@ -39,7 +39,7 @@ public class DtoToEntityMapper {
                 .build();
     }
 
-    public static Person map(com.mcserby.playground.javademoplayground.dto.Person person) {
+    public static Person map(dan_javademoplayground.dto.Person person) {
         Person result = Person.builder()
                 .id(person.getId())
                 .name(person.getName())
@@ -51,8 +51,8 @@ public class DtoToEntityMapper {
         return result;
     }
 
-    public static com.mcserby.playground.javademoplayground.dto.Wallet map(Wallet wallet) {
-        return com.mcserby.playground.javademoplayground.dto.Wallet.builder()
+    public static dan_javademoplayground.dto.Wallet map(Wallet wallet) {
+        return dan_javademoplayground.dto.Wallet.builder()
                 .id(wallet.getId())
                 .name(wallet.getName())
                 .liquidityList(wallet.getLiquidityList()
@@ -62,7 +62,7 @@ public class DtoToEntityMapper {
                 .build();
     }
 
-    public static Wallet map(com.mcserby.playground.javademoplayground.dto.Wallet wallet) {
+    public static Wallet map(dan_javademoplayground.dto.Wallet wallet) {
         return Wallet.builder()
                 .id(wallet.getId())
                 .name(wallet.getName())
@@ -73,8 +73,8 @@ public class DtoToEntityMapper {
                 .build();
     }
 
-    public static com.mcserby.playground.javademoplayground.dto.ExchangePool map(ExchangePool exchangePool) {
-        return com.mcserby.playground.javademoplayground.dto.ExchangePool.builder()
+    public static dan_javademoplayground.dto.ExchangePool map(ExchangePool exchangePool) {
+        return dan_javademoplayground.dto.ExchangePool.builder()
                 .id(exchangePool.getId())
                 .agencyId(exchangePool.getAgency().getId())
                 .liquidityOne(DtoToEntityMapper.map(exchangePool.getLiquidityOne()))
@@ -82,7 +82,7 @@ public class DtoToEntityMapper {
                 .build();
     }
 
-    public static ExchangePool map(com.mcserby.playground.javademoplayground.dto.ExchangePool exchangePool) {
+    public static ExchangePool map(dan_javademoplayground.dto.ExchangePool exchangePool) {
         return ExchangePool.builder()
                 .id(exchangePool.getId())
                 .agency(null)
@@ -91,7 +91,7 @@ public class DtoToEntityMapper {
                 .build();
     }
 
-    private static Liquidity map(com.mcserby.playground.javademoplayground.dto.Liquidity liquidity) {
+    private static Liquidity map(dan_javademoplayground.dto.Liquidity liquidity) {
         return Liquidity.builder()
                 .name(liquidity.getName())
                 .ticker(liquidity.getTicker())
@@ -99,16 +99,16 @@ public class DtoToEntityMapper {
                 .build();
     }
 
-    public static com.mcserby.playground.javademoplayground.dto.Liquidity map(Liquidity liquidity) {
-        return com.mcserby.playground.javademoplayground.dto.Liquidity.builder()
+    public static dan_javademoplayground.dto.Liquidity map(Liquidity liquidity) {
+        return dan_javademoplayground.dto.Liquidity.builder()
                 .name(liquidity.getName())
                 .ticker(liquidity.getTicker())
                 .value(liquidity.getValue())
                 .build();
     }
 
-    public static com.mcserby.playground.javademoplayground.dto.SwapPrice map(SwapPrice price) {
-        return com.mcserby.playground.javademoplayground.dto.SwapPrice.builder()
+    public static dan_javademoplayground.dto.SwapPrice map(SwapPrice price) {
+        return dan_javademoplayground.dto.SwapPrice.builder()
                 .agencyId(price.getAgencyId())
                 .price(price.getPrice())
                 .localDateTime(price.getLocalDateTime())

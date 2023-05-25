@@ -50,7 +50,7 @@ public class PriceArchive implements PriceChangesSubscriber {
         this.priceArchiveRepository.save(swapPriceRecord);
     }
 
-    public List<com.mcserby.playground.javademoplayground.dto.SwapPrice> getArchiveFor(long agencyId, String tickerFrom,
+    public List<dan_javademoplayground.dto.SwapPrice> getArchiveFor(long agencyId, String tickerFrom,
                                                                                        String tickerTo) {
         return this.priceArchiveRepository.findByAgencyIdAndTickerFromAndTickerTo(agencyId, tickerFrom, tickerTo).stream()
                 .map(DtoToEntityMapper::map).collect(Collectors.toList());
