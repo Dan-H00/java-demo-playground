@@ -93,7 +93,12 @@ public class Dex implements PriceSource {
                 DijkstraShortestPath<ExchangePool, DefaultEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
                 ExchangePool[] startEnd = findStartAndEnd(exchangePools, request);
                 ShortestPathAlgorithm.SingleSourcePaths<ExchangePool, DefaultEdge> path = dijkstraShortestPath.getPaths(startEnd[0]);
-                eligibleExchangePools = path.getPath(startEnd[1]).getVertexList();
+                try {
+                    eligibleExchangePools = path.getPath(startEnd[1]).getVertexList();
+                }
+                catch (Throwable e) {
+                    throw new RuntimeException("No exchange pools available to exchange from " + request.getFrom() + " to " + request.getTo());
+                }
             }
 
             Liquidity liquidityFrom =
