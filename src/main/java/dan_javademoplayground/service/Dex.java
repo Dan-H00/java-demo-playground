@@ -16,12 +16,16 @@ import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.nio.dot.DOTExporter;
 import org.jgrapht.traverse.DepthFirstIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.jgrapht.nio.*;
 
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.*;
 
 @Service
@@ -208,19 +212,20 @@ public class Dex implements PriceSource {
 
     private void addEdges(Graph<ExchangePool, DefaultEdge> graph, List<ExchangePool> exchangePools) {
         for (ExchangePool exchangePool : exchangePools) {
-            Iterator<ExchangePool> iterator = new DepthFirstIterator<>(graph, exchangePool);
+            Iterator<ExchangePool> iterator = new DepthFirstIterator<>(graph);
             while (iterator.hasNext()) {
                 ExchangePool nextExchangePool = iterator.next();
-                if (exchangePool.getLiquidityOne().getTicker().equals(nextExchangePool.getLiquidityOne().getTicker())
-                        || exchangePool.getLiquidityOne().getTicker().equals(nextExchangePool.getLiquidityTwo().getTicker())
-                        || exchangePool.getLiquidityTwo().getTicker().equals(nextExchangePool.getLiquidityOne().getTicker())
-                        || exchangePool.getLiquidityTwo().getTicker().equals(nextExchangePool.getLiquidityTwo().getTicker())) {
-                    graph.addEdge(exchangePool, nextExchangePool);
-                    graph.addEdge(nextExchangePool, exchangePool);
+                if(!exchangePool.equals(nextExchangePool)) {
+                    if (exchangePool.getLiquidityOne().getTicker().equals(nextExchangePool.getLiquidityOne().getTicker())
+                            || exchangePool.getLiquidityOne().getTicker().equals(nextExchangePool.getLiquidityTwo().getTicker())
+                            || exchangePool.getLiquidityTwo().getTicker().equals(nextExchangePool.getLiquidityOne().getTicker())
+                            || exchangePool.getLiquidityTwo().getTicker().equals(nextExchangePool.getLiquidityTwo().getTicker())) {
+                        graph.addEdge(exchangePool, nextExchangePool);
+                        graph.addEdge(nextExchangePool, exchangePool);
+                    }
                 }
             }
         }
-
     }
 
     private ExchangePool[] findStartAndEnd(List<ExchangePool> exchangePools, ExchangeRequest request) {
