@@ -122,7 +122,6 @@ public class Dex implements PriceSource {
                     exchangePool.getLiquidityOne().setValue(newX);
                     exchangePool.getLiquidityTwo().setValue(newY);
                     exchangePoolNewPrice = delta / returnedValue;
-                    delta = exchangePool.getLiquidityOne().getValue() - delta;
                 } else {
                     returnedValue = x - k / (y + delta);
                     double newX = x - returnedValue;
@@ -130,7 +129,6 @@ public class Dex implements PriceSource {
                     exchangePool.getLiquidityOne().setValue(newX);
                     exchangePool.getLiquidityTwo().setValue(newY);
                     exchangePoolNewPrice = returnedValue / delta;
-                    delta = exchangePool.getLiquidityTwo().getValue() - delta;
                 }
 
                 PriceChangedEvent e = PriceChangedEvent.builder()
