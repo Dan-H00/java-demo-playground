@@ -188,7 +188,7 @@ class DexTest {
                         .builder().name("Bitcoin").ticker("BTC").value(100_000.0).build())
                 .build();
         ExchangePool btcRon = ExchangePool.builder()
-                .id(1L)
+                .id(2L)
                 .liquidityOne(dan_javademoplayground.persistence.model.Liquidity
                         .builder().name("Bitcoin").ticker("BTC").value(10_000.0).build())
                 .liquidityTwo(dan_javademoplayground.persistence.model.Liquidity
