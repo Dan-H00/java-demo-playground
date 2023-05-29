@@ -212,5 +212,7 @@ class DexTest {
         ExchangeResult swap1 = dex.swap(request);
 
         assertTrue(swap1.isSuccessful());
+        assertEquals(45000, wallet.getLiquidityList().get(0).getValue(), 0.1);
+        assertEquals(236966.82, wallet.getLiquidityList().get(1).getValue(), 0.1);
     }
 }

@@ -107,12 +107,12 @@ public class Dex implements PriceSource {
             }
 
             double price = 0;
-            double delta = exchangedValue;
+            final double finalDelta = exchangedValue;
             double returnedValue = 0;
             String firstCurrency = request.getFrom();
+            double delta = finalDelta;
 
             for (ExchangePool exchangePool : eligibleExchangePools) {
-
                 double x = exchangePool.getLiquidityOne().getValue();
                 double y = exchangePool.getLiquidityTwo().getValue();
                 double k = x * y;
@@ -144,22 +144,21 @@ public class Dex implements PriceSource {
                 notifySubscribers(e);
 
                 price = delta / returnedValue;
+                delta = returnedValue;
+                firstCurrency = exchangePool.getLiquidityTwo().getTicker();
 
                 this.exchangePoolRepository.save(exchangePool);
                 this.walletRepository.save(wallet);
             }
 
-            liquidityFrom.setValue(liquidityFrom.getValue() - delta);
+            liquidityFrom.setValue(liquidityFrom.getValue() - finalDelta);
             liquidityTo.setValue(liquidityTo.getValue() + returnedValue);
             wallet.setLiquidityList(userLiquidities);
-
-            delta = liquidityFrom.getValue();
-            returnedValue = liquidityTo.getValue();
 
             dan_javademoplayground.dto.Liquidity swapped = dan_javademoplayground.dto.Liquidity.builder()
                     .name(liquidityFrom.getName())
                     .ticker(liquidityFrom.getTicker())
-                    .value(delta)
+                    .value(finalDelta)
                     .build();
 
             dan_javademoplayground.dto.Liquidity result = dan_javademoplayground.dto.Liquidity.builder()
