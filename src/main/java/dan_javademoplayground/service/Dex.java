@@ -11,21 +11,15 @@ import dan_javademoplayground.persistence.repository.AgencyRepository;
 import dan_javademoplayground.persistence.repository.ExchangePoolRepository;
 import dan_javademoplayground.persistence.repository.PersonRepository;
 import dan_javademoplayground.persistence.repository.WalletRepository;
-import org.jgrapht.Graph;
+import dan_javademoplayground.service.helpers.Graph;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.nio.dot.DOTExporter;
-import org.jgrapht.traverse.DepthFirstIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.jgrapht.nio.*;
 
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.*;
 
 @Service
@@ -89,7 +83,9 @@ public class Dex implements PriceSource {
             if (exchangePools.size() == 1) {
                 eligibleExchangePools = List.of(searchEligibleLP(request, agency));
             } else {
-                Graph<ExchangePool, DefaultEdge> graph = createGraph(agency);
+                Graph graph = createGraph(agency);
+
+                // TODO Dijkstra
                 DijkstraShortestPath<ExchangePool, DefaultEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
                 ExchangePool[] startEnd = findStartAndEnd(exchangePools, request);
                 ShortestPathAlgorithm.SingleSourcePaths<ExchangePool, DefaultEdge> path = dijkstraShortestPath.getPaths(startEnd[0]);
@@ -148,13 +144,14 @@ public class Dex implements PriceSource {
                         .build();
                 notifySubscribers(e);
 
-                price = delta / returnedValue;
                 delta = returnedValue;
                 firstCurrency = exchangePool.getLiquidityTwo().getTicker();
 
                 this.exchangePoolRepository.save(exchangePool);
                 this.walletRepository.save(wallet);
             }
+
+            price = finalDelta / returnedValue;
 
             liquidityFrom.setValue(liquidityFrom.getValue() - finalDelta);
             liquidityTo.setValue(liquidityTo.getValue() + returnedValue);
@@ -204,21 +201,40 @@ public class Dex implements PriceSource {
                                 request.getTo()));
     }
 
-    private Graph<ExchangePool, DefaultEdge> createGraph(Agency agency) {
-        Graph<ExchangePool, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+    private Graph createGraph(Agency agency) {
+        Graph graph = new Graph();
         List<ExchangePool> exchangePools = agency.getExchangePools();
         for (ExchangePool exchangePool : exchangePools) {
             graph.addVertex(exchangePool);
         }
-        addEdges(graph, exchangePools);
+        iterateGraphAndAddEdges(graph, exchangePools);
         return graph;
     }
 
-    private void addEdges(Graph<ExchangePool, DefaultEdge> graph, List<ExchangePool> exchangePools) {
+//    private void addEdges(Graph graph, List<ExchangePool> exchangePools) {
+//        for (ExchangePool exchangePool : exchangePools) {
+//            Iterator<ExchangePool> iterator = new DepthFirstIterator<>(graph);
+//            while (iterator.hasNext()) {
+//                ExchangePool nextExchangePool = iterator.next();
+//                if(!exchangePool.equals(nextExchangePool)) {
+//                    if (exchangePool.getLiquidityOne().getTicker().equals(nextExchangePool.getLiquidityOne().getTicker())
+//                            || exchangePool.getLiquidityOne().getTicker().equals(nextExchangePool.getLiquidityTwo().getTicker())
+//                            || exchangePool.getLiquidityTwo().getTicker().equals(nextExchangePool.getLiquidityOne().getTicker())
+//                            || exchangePool.getLiquidityTwo().getTicker().equals(nextExchangePool.getLiquidityTwo().getTicker())) {
+//                        graph.addEdge(exchangePool, nextExchangePool);
+//                        graph.addEdge(nextExchangePool, exchangePool);
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+    public void iterateGraphAndAddEdges(Graph graph, List<ExchangePool> exchangePools) {
+        Set<Graph.Vertex> vertices = graph.adjVertices.keySet();
         for (ExchangePool exchangePool : exchangePools) {
-            Iterator<ExchangePool> iterator = new DepthFirstIterator<>(graph);
+            Iterator<Graph.Vertex> iterator = vertices.iterator();
             while (iterator.hasNext()) {
-                ExchangePool nextExchangePool = iterator.next();
+                ExchangePool nextExchangePool = iterator.next().exchangePool;
                 if(!exchangePool.equals(nextExchangePool)) {
                     if (exchangePool.getLiquidityOne().getTicker().equals(nextExchangePool.getLiquidityOne().getTicker())
                             || exchangePool.getLiquidityOne().getTicker().equals(nextExchangePool.getLiquidityTwo().getTicker())
