@@ -2,26 +2,16 @@ package dan_javademoplayground.service.helpers;
 
 import dan_javademoplayground.persistence.model.ExchangePool;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Graph {
-    public Map<Vertex, List<Vertex>> adjVertices;
-
-    public Graph(Map<Vertex, List<Vertex>> adjVertices) {
-        this.adjVertices = adjVertices;
-    }
+    public Map<Vertex, List<Vertex>> adjVertices = new HashMap<>();
 
     public Graph() {
     }
 
-    public List<Vertex> getAdjVertices(ExchangePool exchangePool) {
-        return adjVertices.get(new Vertex(exchangePool));
-    }
-
     public void addVertex(ExchangePool exchangePool) {
-        adjVertices.putIfAbsent(new Vertex(exchangePool), new ArrayList<>());
+        adjVertices.putIfAbsent(new Vertex(exchangePool), new ArrayList<Vertex>());
     }
 
     public void addEdge(ExchangePool exchangePool1, ExchangePool exchangePool2) {
@@ -32,10 +22,58 @@ public class Graph {
         adjVertices.get(v2).add(v1);
     }
 
+    public List<Vertex> shortestPath(Vertex source, Vertex destination) {
+        Map<Vertex, Double> distance = new HashMap<>();
+        Map<Vertex, Vertex> previous = new HashMap<>();
+        PriorityQueue<Vertex> queue = new PriorityQueue<>(Comparator.comparingDouble(distance::get));
+
+        for (Vertex vertex : adjVertices.keySet()) {
+            distance.put(vertex, Double.POSITIVE_INFINITY);
+            previous.put(vertex, null);
+        }
+
+        distance.put(source, 0.0);
+        queue.add(source);
+
+        while (!queue.isEmpty()) {
+            Vertex current = queue.poll();
+
+            if (current.equals(destination)) {
+                break;
+            }
+
+            List<Vertex> neighbors = adjVertices.get(current);
+            for (Vertex neighbor : neighbors) {
+                double weight = 1.0;
+                double totalDistance = distance.get(current) + weight;
+
+                if (totalDistance < distance.get(neighbor)) {
+                    distance.put(neighbor, totalDistance);
+                    previous.put(neighbor, current);
+                    queue.add(neighbor);
+                }
+            }
+        }
+
+        List<Vertex> shortestPath = new ArrayList<>();
+        Vertex current = destination;
+        while (current != null) {
+            shortestPath.add(current);
+            current = previous.get(current);
+        }
+        Collections.reverse(shortestPath);
+
+        return shortestPath;
+    }
+
     public class Vertex {
         public ExchangePool exchangePool;
+
         public Vertex(ExchangePool exchangePool) {
             this.exchangePool = exchangePool;
+        }
+
+        public Vertex() {
         }
 
         @Override
@@ -49,20 +87,14 @@ public class Graph {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
+            if (this == obj) return true;
+            if (obj == null) return false;
+            if (getClass() != obj.getClass()) return false;
             Vertex other = (Vertex) obj;
-            if (!getOuterType().equals(other.getOuterType()))
-                return false;
+            if (!getOuterType().equals(other.getOuterType())) return false;
             if (exchangePool == null) {
-                if (other.exchangePool != null)
-                    return false;
-            } else if (!exchangePool.equals(other.exchangePool))
-                return false;
+                if (other.exchangePool != null) return false;
+            } else if (!exchangePool.equals(other.exchangePool)) return false;
             return true;
         }
 
