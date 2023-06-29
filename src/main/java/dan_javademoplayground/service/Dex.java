@@ -83,32 +83,32 @@ public class Dex implements PriceSource {
                 Graph graph = createGraph(agency);
 
                 ExchangePool[] startEnd = findStartAndEnd(exchangePools, request);
-                try {
-                    Graph.Vertex startVertex = null;
-                    Graph.Vertex endVertex = null;
-                    Set<Graph.Vertex> vertices = graph.adjVertices.keySet();
-                    Iterator<Graph.Vertex> iterator = vertices.iterator();
-                    while (iterator.hasNext()) {
-                        Graph.Vertex vertex = iterator.next();
-                        ExchangePool exchangePool = vertex.exchangePool;
+
+                Graph.Vertex startVertex = null;
+                Graph.Vertex endVertex = null;
+                Set<Graph.Vertex> vertices = graph.adjVertices.keySet();
+                Iterator<Graph.Vertex> iterator = vertices.iterator();
+                while (iterator.hasNext()) {
+                    Graph.Vertex vertex = iterator.next();
+                    ExchangePool exchangePool = vertex.exchangePool;
 //                        System.out.println(exchangePool);
-                        if (exchangePool.equals(startEnd[0])) {
-                            startVertex = vertex;
+                    if (exchangePool.equals(startEnd[0])) {
+                        startVertex = vertex;
 //                            System.out.println(startVertex);
-                        } else if (exchangePool.equals(startEnd[1])) {
-                            endVertex = vertex;
+                    } else if (exchangePool.equals(startEnd[1])) {
+                        endVertex = vertex;
 //                            System.out.println(endVertex);
-                        }
                     }
-                    List<Graph.Vertex> dijkstra = graph.shortestPath(startVertex, endVertex);
-                    System.out.println(dijkstra);
-                    for (Graph.Vertex v : dijkstra) {
-                        eligibleExchangePools.add(v.exchangePool);
-                    }
-//                    System.out.println(eligibleExchangePools);
-                } catch (Throwable e) {
+                }
+                List<Graph.Vertex> dijkstra = graph.shortestPath(startVertex, endVertex);
+//                System.out.println(dijkstra);
+                for (Graph.Vertex v : dijkstra) {
+                    eligibleExchangePools.add(v.exchangePool);
+                }
+                if (eligibleExchangePools.isEmpty()) {
                     throw new RuntimeException("No exchange pools available to exchange from " + request.getFrom() + " to " + request.getTo());
                 }
+//                    System.out.println(eligibleExchangePools);
             }
 
             Liquidity liquidityFrom =
